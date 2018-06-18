@@ -1,10 +1,36 @@
 /****************************************************************
     uhr box
-    Electronic simulation of the uhr box that luftwaffe used
+    Electronic simulation of the uhr box that luftwaffe used with their enigma machine
+
+    Copyright: Peter Sjoberg <peters-enigma AT techwiz DOT ca>+
+    License: GPLv3
+      This program is free software: you can redistribute it and/or modify
+      it under the terms of the GNU General Public License version 3 as 
+      published by the Free Software Foundation.
+ 
+      This program is distributed in the hope that it will be useful,
+      but WITHOUT ANY WARRANTY; without even the implied warranty of
+      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+      GNU General Public License for more details.
+ 
+      You should have received a copy of the GNU General Public License
+      along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ 
+
+  History:
     v0.00 - a first version to test the basic concept
     v0.02 - added code for a dual 7seg display
     v0.03 - added code for encoder
-    
+
+
+Status:
+  Done:
+    led and encoder works
+    plugboard connection is tested and works
+  ToDo:
+    uhr mapping does not work correctly, need to get the mapping 
+    between in and out corrected, probably need to add some some more lookup tables
+
 */
 
 
