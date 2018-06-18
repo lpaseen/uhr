@@ -1,0 +1,14 @@
+*-bak
+*.bak
+*-BAK
+*.BAK
+*.csv
+*.log
+*.state
+.svn
+*~
+BAK
+ARCHIVE
+logs
+q
+*orig
