@@ -197,18 +197,28 @@ uint8_t valA[4];
 const byte steckerbrett[] PROGMEM =   "QWERTZUIOASDFGHJKPYXCVBNML"; //
 //const byte steckerbrett[] PROGMEM = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"; //
 
-// Uhrkontakt (w) 00 01 02 03 04 05 06 07 08 09 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 
-// Uhrkontakt (r) 26 11 24 21 02 31 00 25 30 39 28 13 22 35 20 37 06 23 04 33 34 19 32 09 18 07 16 17 10 03 08 01 38 27 36 29 14 15 12 05
+// naming convention:
+//  red/outer are the red plugs that are connected to the outer ring
+//  white/inner are the white (or black) plugs connected to the inner ring
+//  the logic see the signal flow to go from left to right, from red to white so "IN"=red and "OUT" = white, even if the active signal actually is on the right/"IN" side
+
+
+// Uhrkontakt (r) 00 01 02 03 04 05 06 07 08 09 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 
+// Uhrkontakt (w) 26 11 24 21 02 31 00 25 30 39 28 13 22 35 20 37 06 23 04 33 34 19 32 09 18 07 16 17 10 03 08 01 38 27 36 29 14 15 12 05
 
 // Red plugs (a) goes to outer ring
 // white plugs (b) goes to inner ring
 
-//                               00 01 02 03 04 05 06 07 08 09 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39
+//                                   00 01 02 03 04 05 06 07 08 09 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39
 const uint8_t UHROUTER[] PROGMEM  = { 6,31, 4,29,18,39,16,25,30,23,28, 1,38,11,36,37,26,27,24,21,14, 3,12,17, 2, 7, 0,33,10,35, 8, 5,22,19,20,13,34,15,32, 9};
 const uint8_t UHRINNER[] PROGMEM  = {26,11,24,21, 2,31, 0,25,30,39,28,13,22,35,20,37, 6,23, 4,33,34,19,32, 9,18, 7,16,17,10, 3, 8, 1,38,27,36,29,14,15,12, 5};
-// red plugs (UHRIN) are in order 0..9
-//                               0 1 2 3 4 5 6 7 8 9
-const uint8_t UHROUT[] PROGMEM ={6,0,7,5,1,8,4,2,9,3}; // the white plugs
+//
+//                                    0  1  2  3  4  5  6  7  8  9
+const uint8_t UHRIN[]      PROGMEM ={ 0, 4, 8,12,16,20,24,28,32,36}; // the red "a" plugs
+const uint8_t UHROUT[]     PROGMEM ={ 4,16,28,36,24,12, 0, 8,20,32}; // the white "b" plugs
+//                                    0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39
+const uint8_t UHRIN_REV[]  PROGMEM ={ 0,99, 0,99, 1,99, 1,99, 2,99, 2,99, 3,99, 3,99, 4,99, 4,99, 5,99, 5,99, 6,99, 6,99, 7,99, 7,99, 8,99, 8,99, 9,99, 9,99};
+const uint8_t UHROUT_REV[] PROGMEM ={ 6,99, 6,99, 0,99, 0,99, 7,99, 7,99, 5,99, 5,99, 1,99, 1,99, 8,99, 8,99, 4,99, 4,99, 2,99, 2,99, 9,99, 9,99, 3,99, 3,99};
 static uint8_t uhrpos=0;
 
 // plug r/w   size  ring  pos  
@@ -716,15 +726,17 @@ void updateDisplay(){
 //
 // what number (0-99) to show
 //
-void showNumber(uint8_t number, boolean dp=false){
+void showNumber(uint8_t number, boolean leadingSpace=false,boolean dp=false){
   
   LEDassembly[0]=(number%100)/10;if (dp) {LEDassembly[0]+=10;}
   LEDassembly[1]=number%10;;if (dp) {LEDassembly[1]+=10;}
-  // replace leading "0" with space
-  if (LEDassembly[0]==0 ){
-    LEDassembly[0]=20;
-  } else if (LEDassembly[0]==10 ){
-    LEDassembly[0]=21;
+  if (leadingSpace){
+    // replace leading "0" with space
+    if (LEDassembly[0]==0 ){
+      LEDassembly[0]=20;
+    } else if (LEDassembly[0]==10 ){
+      LEDassembly[0]=21;
+    }
   }
   //Have now figured out what we need to show, time to update display buffer
   noInterrupts();
@@ -742,7 +754,6 @@ void setup() {
   Serial.begin(38400);
   Serial.println(F("UHR box v0.03"));
   Serial.println();
-  delay(100);
 
   Wire.begin(); // enable the wire lib
   //to fast  Wire.setClock(400000L);
@@ -789,11 +800,7 @@ void setup() {
 
   showNumber(uhrpos);
 
-//  pinMode(2, INPUT);
-//  pinMode(3, INPUT);
-//  pinMode(4, INPUT);
-//  pinMode(5, INPUT);
-
+  // prep the encoder pins, reading them is done in the interrupt
   pinMode(encoderPins[0], INPUT_PULLUP);
   pinMode(encoderPins[1], INPUT_PULLUP);
 
@@ -801,14 +808,13 @@ void setup() {
   Timer1.initialize(1000); // Run every .001 seconds
   Timer1.attachInterrupt(updateDisplay);
 
-  //  attachInterrupt(digitalPinToInterrupt(encoderPins[0]), updateEncoderState, CHANGE);
-  //  attachInterrupt(digitalPinToInterrupt(encoderPins[1]), updateEncoderState, CHANGE);
+  Serial.println(F("Setup done"));
 } // setup
 
 
 /****************************************************************/
 /****************************************************************/
-
+// return plugnumber based on bitmap
 uint8_t getPlugInfo(uint8_t val,uint8_t base=0){
   uint8_t bits;
   
@@ -836,13 +842,13 @@ void loop() {
   static uint8_t activePlugOut = 99;
   static unsigned long lastChange=0;
 
+  // first check if the selector was changed
   if (encoderMoved){
     encoderMoved=false;
-    //    Serial.println(encoderState & 0b1111,HEX);
-    //    printBin8(encoderState); Serial.println(); //PSDEBUG
+    //    printBin8(encoderState); Serial.println(); //DEBUG
     if ((encoderState & 0b11)==0b11) { // current state is bottom of the click
       switch ((encoderState & 0b1100)>>2) { //check prev state
-        case B00:
+        case B00: // Something wrong, a state was skipped, bad contact?
         case B11: // if current is 11 prev can't be 11 also
           break;
         case B10:
@@ -861,15 +867,14 @@ void loop() {
       } // if current state is bottom of the click 
   } // if encoderMoved
   
+  showNumber(uhrpos);
+
   readAll();
   bitcnt = (__builtin_popcount(valA[0]) +
             __builtin_popcount(valA[1]) +
             __builtin_popcount(valA[2]) +
             __builtin_popcount(valA[3])
             );
-
-  //  showNumber(millis()/1000);
-  showNumber(uhrpos);
 
   if (bitcnt == 31 ){ // something changed, one plug is low
     lastChange=millis();
@@ -878,25 +883,29 @@ void loop() {
     plugOut=getPlugInfo(valA[2])+getPlugInfo(valA[3],8); // read white/inner ring
     // at any given time it is only _one_ incoming plug that is valid
     // anything else is discarded
+    
+    if (plugIn>0){  // the active signale is on the red/outer side
+      plugIn=pgm_read_byte(&UHRIN[plugIn-1])+1; // get the contact it is connected to
+    }
 
     if (plugOut>0){ // the active signale is on the white/inner side, transpose it
-          plugOut=pgm_read_byte(&UHROUT[plugOut-1])+1;
+      plugOut=pgm_read_byte(&UHROUT[plugOut-1])+1; // get the contact it is connected to
     }
 
     if (plugIn>0 && plugIn != activePlug){ // detecting a scan on the red side
-      activePlug=pgm_read_byte(&UHROUTER[((plugIn-1)*2+uhrpos) % 40]); // find plug to trigger on the white side
+      activePlug=pgm_read_byte(&UHROUTER[(plugIn+uhrpos) % 40]); // find plug to trigger on the white side
       // BUG, probably need to do a reverse of UHROUT here
     }else if (plugOut>0 && plugOut != activePlug){ // detecting a scan on the white side
-      activePlug=pgm_read_byte(&UHRINNER[((plugIn-1)*2+uhrpos) % 40]); // find plug to trigger on the red side
+      activePlug=pgm_read_byte(&UHRINNER[(plugIn+uhrpos) % 40]); // find plug to trigger on the red side
     }else{
       activePlug=99; // might be the plug we activated in prev scan
     }
 
     if (activePlug < 40){
       if(activePlug > 9){ // plug 0-9 on first chip, 10-19 on second chip
-        setPortOut(activePlug+6); 
+        setPortOut(UHROUT_REV[activePlug]+6);
       }else{
-        setPortOut(activePlug);
+        setPortOut(UHRIN_REV[activePlug]);
       }
     }else{
       setPortInAll(); // go back to listening
