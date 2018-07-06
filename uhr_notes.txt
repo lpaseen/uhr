@@ -1,0 +1,49 @@
+Crypto test from
+https://people.physik.hu-berlin.de/~palloks/js/enigma/enigma-u_v20_en.html
+To be used to test uhr coding later
+
+Wheels: B. I-II-III (A,A,A) / Rings: 01 01 01 / Plugged: QP WY EX RC TV ZB UN IM OL AK /Uhr=00
+AAAAA... ->
+yfiht lxbsz krfjp mtqey shcwv vqxnz qdzli vpimi hzpxu tdicz pccif kshcz bhpqp ecjcp mhxet jlhgg xvevm yenvu odsqj nnlui pryrw zcxie nkhzr rhvdm tdgxs nynmn hvpsn kxxns upigb nvbey ixmle cpibm osrgq qxkyk myzzi wlzlm xhdgf cebmo gndgn tspqc mlngy wqwst kehrs fbsdq swqho cjgri pvgbi yjnuv
+
+
+Wheels: B. I-II-III (A,A,A) / Rings: 01 01 01 / Plugged: QP WY EX RC TV ZB UN IM OL AK /Uhr=01
+AAAAA... ->
+mjews ojpfi pfmnh ueqkm zerev pdovi qxicb bedvx xijyo cozxi lubue btfni mgmds uzuwr hctyw onwwm mncpw lsscp dgdgp nwhxn vmkjw imtuj spgih zmnpg vqnmm sfyrq oyndw vpyfo pvjwt xezux kzclf rybzh twqmc yxxnh jtiim vlidf xdtzj ycenb mhmmy vkfpd gdxer ztqnc sfguo rweym kcxvq rhxrv bmnwu mernd
+
+Wheels: B. I-II-III (A,A,A) / Rings: 01 01 01 / Plugged: QP WY EX RC TV ZB UN IM OL AK /Uhr=02
+AAAAA... ->
+gsvib sopyv hlzhj tywrm ybifl pcvcp wlicb mggbu plkgl jfyms dpbcx cdlsq dfhqq rzfsf qgkrs necqb ztrjp frdxp nztzo kfzdo ttkoj sshbr jszbx fjpue jwkvy ldiqw gkbjk nmtne nohog dixrc tefpr nzggn ngwet kqimk bfntj emtvs nkqtl trdkn ctseq mzzfj fslxv xqwix qrkdy tbgtk eqmuw pplif eqdox ikobx
+
+Wheels: B. I-II-III (A,A,A) / Rings: 01 01 01 / Plugged: QP WY EX RC TV ZB UN IM OL AK /Uhr=03
+AAAAA... ->
+whsuj kylkw cgbqd zvrxm vmusc creng reues ihqog eenfj sqysf lzxzx lhkwj ldmro zhzch ljwqf iistl iswbs bybsc mborm wdegg vtpsm fbfzb npxbc nbkvp vsiwl gouvi kqybi vtkix vywdi yubzh icglh nlydl xpxor rnuin fmehw chqji ijbsv ctxjj ovwvs jqirw oeten mrkut yglzj ifofr wgrys tqfub fjkdz uiqwk
+
+Wheels: B. I-II-III (A,A,A) / Rings: 01 01 01 / Plugged: QP WY EX RC TV ZB UN IM OL AK /Uhr=04
+AAAAA... ->
+ibxsz kltwh ktmsx ktsic qwcbs gcfdi fhhbi ujnkn fmghe nkqhi gtjzh ifcio pbloo vqigi oczjp uudos ujvbx lgrxe blbxz ttyex mdwvl cbsid tlwhf qdgxl tmuvc vnsou kttcu rfdul ekmsu jfqkz uqdiz bjmqm jpryx nofuf iprlv fzjpu unoqc zsmss zfzvo lcubc rrfcn qonhr ocsvf uvbmi cogif hmzki mowkg susel
+
+Wheels: B. I-II-III (A,A,A) / Rings: 01 01 01 / Plugged: QP WY EX RC TV ZB UN IM OL AK /Uhr=20
+AAAAA... ->
+whsej cmlcw kgyzd tnqpx nxesk kqubg queus rhzig uubfj szmsf ltptp lhcwj ldxqi thtkh ljwzf rrsol rswys ymysk xyiqx wdugg novsx fyfty bvpyk bycnv nsrwl gienr czmyr nocrp nmwdr meyth rkglh blmdl pvpiq qberb fxuhw khzjr rjysn kopjj inwns jzrqw iuoub xqceo mgltj rfifq wgqms ozfey fjcdt erzwc
+
+
+Wheels: B. I-II-III (A,A,A) / Rings: 01 01 01 / Plugged: QP WY EX RC TV ZB UN IM OL AK /Uhr=39
+AAAAA... ->
+yjzts ujcfi cfyvh ozwmy rzqzn cduni wkibl lzdnk kijpu burki xoloz lefvi ygyds orotq hbept uvtty yvbct xssbc dgdgc vthkv nymjt iyeoj scgih ryvcg nwvyy sfpqw upvdt ncpfu cnjte kzrok mrbxf qplrh etwyb pkkvh jeiiy nxidf kderj pbzvl yhyyp nmfcd gdkzq rewvb sfgou qtzpy mbknw qhkqn lyvto yzqvd
+
+Wheels: B. I-II-III (A,A,A) / Rings: 01 01 01 / Plugged: QP WY EX RC TV ZB UN IM OL AK /Uhr=00
+ABCD..ZABC... ->
+yveov pbtly ahcyt wcwcc zegbz mqnhp zspsa smfal wjvcb axctt qqcnb rdzbn xczbg jsmpc kyrsb hvrgc tmatw gpmbs ktedx mhwaf isajw uaovk wreyi xrqtw cwdgb omgre hzyzl pricf fhxxy zevll qmhjx ipjvj bclnh grrob kirkm errbr nddfq natnc qbzsk exaag tyfcs qnesf nllhc scvye pxibs vynxs rmcri wkovx bqpys qitqx cwhxh tbrnd 
+
+Wheels: B. I-II-III (A,A,A) / Rings: 01 01 01 / Plugged: QP WY EX RC TV ZB UN IM OL AK /Uhr=01
+ABCD..ZABC... ->
+mpqek xytsv gnaaw ixdcc cjvzh gdehx rsxsr sfvhl eqbly itofv nrbpy wyayk ycymy lnxsa mveka rodwx tputo gqpjj pvjco zhogs kguvw xiejm owhvg uaayi jxdgv zbeeu oqvaf xwrkf hydkd uugbb zsspl xyalj icbku gvtts zgykp qhomr qmtru kxtkc gyjjp hbcft tvoqf enmnd kbfhc sylhg dkhua avkqa ogmnu pmeun yufvg aaaai kehng urkrm
+
+Wheels: B. I-II-III (A,A,A) / Rings: 01 01 01 / Plugged: QP WY EX RC TV ZB UN IM OL AK /Uhr=02
+ABCD..ZABC... ->
+gnutr ynemx taegu uzivf eyzbi ucgay jsyss seuge tsgcn yybyy rqbxo uwwnm xvxoj zcsgy pzqtu shbqa rlgeo gllqw otjxu mhbne xmslj uutvp oupxc nzknu zddio pfvmc grwwo yuzqf yivxd bfnkd hfvid wzqmj wvkmr gjmam qntwl gqzdg wbqxx mpemv znzdr tkjyv eqnbz atxiy fkjhv sfbyx wuhbf vxzrj knhpx zhtuc nicxq yobwu zlhrj wjfom
+
+Wheels: B. I-II-III (A,A,A) / Rings: 01 01 01 / Plugged: QP WY EX RC TV ZB UN IM OL AK /Uhr=03
+ABCD..ZABC... ->
+wyqwi cpqql gcwxx oravo ccsbu yrwtc vscst sfnim plkmp dfnjb taxyj emzpk kvpgn mudpc xebwy foetc kydqt ggyjq ahams khqdq uzjjm ciwcx teqlg ssrfa rddoc xceru kurzz ceoaf hzyqx odpbp wfxuw olzjj tvbkb glwza bxtzy rkofn vdbok kmqkv epjib oudbv qyynk esuud gbphv slnhy lowcp vllaj hzjez yfwqm paqlg qgpgu syhfc zdgud
