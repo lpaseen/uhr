@@ -5,17 +5,17 @@
     Copyright: Peter Sjoberg <peters-enigma AT techwiz DOT ca>+
     License: GPLv3
       This program is free software: you can redistribute it and/or modify
-      it under the terms of the GNU General Public License version 3 as 
+      it under the terms of the GNU General Public License version 3 as
       published by the Free Software Foundation.
- 
+
       This program is distributed in the hope that it will be useful,
       but WITHOUT ANY WARRANTY; without even the implied warranty of
       MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
       GNU General Public License for more details.
- 
+
       You should have received a copy of the GNU General Public License
       along with this program.  If not, see <http://www.gnu.org/licenses/>.
- 
+
 
   History:
     v0.00 - a first version to test the basic concept
@@ -23,12 +23,12 @@
     v0.03 - added code for encoder
 
 
-Status:
+  Status:
   Done:
     led and encoder works
     plugboard connection is tested and works
   ToDo:
-    uhr mapping does not work correctly, need to get the mapping 
+    uhr mapping does not work correctly, need to get the mapping
     between in and out corrected, probably need to add some some more lookup tables
 
 */
@@ -43,52 +43,52 @@ Status:
 // also at https://www.pjrc.com/teensy/td_libs_TimerOne.html
 #include <TimerOne.h>
 
-uint8_t LEDpattern[]={
-//    .abcdefg
-    0b01111110,  // 0
-    0b00110000,  // 1
-    0b01101101,  // 2
-    0b01111001,  // 3
-    0b00110011,  // 4
-    0b01011011,  // 5
-    0b01011111,  // 6
-    0b01110010,  // 7
-    0b01111111,  // 8
-    0b01111011,  // 9
-// #+10 => decimal point
-    0b11111110,  // 0.
-    0b10110000,  // 1.
-    0b11101101,  // 2.
-    0b11111001,  // 3.
-    0b10110011,  // 4.
-    0b11011011,  // 5.
-    0b11011111,  // 6.
-    0b11110010,  // 7.
-    0b11111111,  // 8.
-    0b11111011,  // 9.
-//
-    0b00000000,   // blank (20)
-    0b10000000  // . (21)
+uint8_t LEDpattern[] = {
+  //    .abcdefg
+  0b01111110,  // 0
+  0b00110000,  // 1
+  0b01101101,  // 2
+  0b01111001,  // 3
+  0b00110011,  // 4
+  0b01011011,  // 5
+  0b01011111,  // 6
+  0b01110010,  // 7
+  0b01111111,  // 8
+  0b01111011,  // 9
+  // #+10 => decimal point
+  0b11111110,  // 0.
+  0b10110000,  // 1.
+  0b11101101,  // 2.
+  0b11111001,  // 3.
+  0b10110011,  // 4.
+  0b11011011,  // 5.
+  0b11011111,  // 6.
+  0b11110010,  // 7.
+  0b11111111,  // 8.
+  0b11111011,  // 9.
+  //
+  0b00000000,   // blank (20)
+  0b10000000  // . (21)
 };
 
 
 #define CC
 #define MAXLED 2
-static uint8_t LEDBuffer[MAXLED]={20,20};
-static uint8_t LEDassembly[MAXLED]={20,20};
+static uint8_t LEDBuffer[MAXLED] = {20, 20};
+static uint8_t LEDassembly[MAXLED] = {20, 20};
 
 #ifdef CC
 //common cathode
-static uint8_t CommonActive=LOW;
-static uint8_t CommonInactive=HIGH;
-static uint8_t SegmentActive=HIGH;
-static uint8_t SegmentInactive=LOW;
+static uint8_t CommonActive = LOW;
+static uint8_t CommonInactive = HIGH;
+static uint8_t SegmentActive = HIGH;
+static uint8_t SegmentInactive = LOW;
 #elif CA
 //common anode
-static uint8_t CommonActive=HIGH;
-static uint8_t CommonInactive=LOW;
-static uint8_t SegmentActive=LOW;
-static uint8_t SegmentInactive=HIGH;
+static uint8_t CommonActive = HIGH;
+static uint8_t CommonInactive = LOW;
+static uint8_t SegmentActive = LOW;
+static uint8_t SegmentInactive = HIGH;
 #else
 #error need CC or CA defined
 #endif
@@ -97,14 +97,14 @@ static uint8_t SegmentInactive=HIGH;
 //                    digit0, digit1
 const uint8_t Common[] = {A2, A3};
 //                           dp, a   b   c   d   e   f   g
-const uint8_t Segment[] = {  10, 6,  7,  9, 12, 11,  8, 13};
+const uint8_t Segment[] = {   6, 13, 12, 11, 10,  9,  8,  7};
 
 /****************************************************************/
 //static const uint8_t encoderPins[] = {2,3}; // external interrupt is only available on 2 and 3
-static const uint8_t encoderPins[] = {4,5}; // 
+static const uint8_t encoderPins[] = {4, 5}; //
 volatile uint8_t encoderState = 0xff;
-volatile unsigned long encoderChange=0;
-volatile boolean encoderMoved=false;
+volatile unsigned long encoderChange = 0;
+volatile boolean encoderMoved = false;
 
 /****************************************************************/
 //  MCP23017 registers, all as seen from bank0
@@ -203,25 +203,25 @@ const byte steckerbrett[] PROGMEM =   "QWERTZUIOASDFGHJKPYXCVBNML"; //
 //  the logic see the signal flow to go from left to right, from red to white so "IN"=red and "OUT" = white, even if the active signal actually is on the right/"IN" side
 
 
-// Uhrkontakt (r) 00 01 02 03 04 05 06 07 08 09 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 
+// Uhrkontakt (r) 00 01 02 03 04 05 06 07 08 09 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39
 // Uhrkontakt (w) 26 11 24 21 02 31 00 25 30 39 28 13 22 35 20 37 06 23 04 33 34 19 32 09 18 07 16 17 10 03 08 01 38 27 36 29 14 15 12 05
 
 // Red plugs (a) goes to outer ring
 // white plugs (b) goes to inner ring
 
 //                                   00 01 02 03 04 05 06 07 08 09 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39
-const uint8_t UHROUTER[] PROGMEM  = { 6,31, 4,29,18,39,16,25,30,23,28, 1,38,11,36,37,26,27,24,21,14, 3,12,17, 2, 7, 0,33,10,35, 8, 5,22,19,20,13,34,15,32, 9};
-const uint8_t UHRINNER[] PROGMEM  = {26,11,24,21, 2,31, 0,25,30,39,28,13,22,35,20,37, 6,23, 4,33,34,19,32, 9,18, 7,16,17,10, 3, 8, 1,38,27,36,29,14,15,12, 5};
+const uint8_t UHROUTER[] PROGMEM  = { 6, 31, 4, 29, 18, 39, 16, 25, 30, 23, 28, 1, 38, 11, 36, 37, 26, 27, 24, 21, 14, 3, 12, 17, 2, 7, 0, 33, 10, 35, 8, 5, 22, 19, 20, 13, 34, 15, 32, 9};
+const uint8_t UHRINNER[] PROGMEM  = {26, 11, 24, 21, 2, 31, 0, 25, 30, 39, 28, 13, 22, 35, 20, 37, 6, 23, 4, 33, 34, 19, 32, 9, 18, 7, 16, 17, 10, 3, 8, 1, 38, 27, 36, 29, 14, 15, 12, 5};
 //
 //                                    0  1  2  3  4  5  6  7  8  9
-const uint8_t UHRIN[]      PROGMEM ={ 0, 4, 8,12,16,20,24,28,32,36}; // the red "a" plugs
-const uint8_t UHROUT[]     PROGMEM ={ 4,16,28,36,24,12, 0, 8,20,32}; // the white "b" plugs
+const uint8_t UHRIN[]      PROGMEM = { 0, 4, 8, 12, 16, 20, 24, 28, 32, 36}; // the red "a" plugs
+const uint8_t UHROUT[]     PROGMEM = { 4, 16, 28, 36, 24, 12, 0, 8, 20, 32}; // the white "b" plugs
 //                                    0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39
-const uint8_t UHRIN_REV[]  PROGMEM ={ 0,99, 0,99, 1,99, 1,99, 2,99, 2,99, 3,99, 3,99, 4,99, 4,99, 5,99, 5,99, 6,99, 6,99, 7,99, 7,99, 8,99, 8,99, 9,99, 9,99};
-const uint8_t UHROUT_REV[] PROGMEM ={ 6,99, 6,99, 0,99, 0,99, 7,99, 7,99, 5,99, 5,99, 1,99, 1,99, 8,99, 8,99, 4,99, 4,99, 2,99, 2,99, 9,99, 9,99, 3,99, 3,99};
-static uint8_t uhrpos=0;
+const uint8_t UHRIN_REV[]  PROGMEM = { 0, 99, 0, 99, 1, 99, 1, 99, 2, 99, 2, 99, 3, 99, 3, 99, 4, 99, 4, 99, 5, 99, 5, 99, 6, 99, 6, 99, 7, 99, 7, 99, 8, 99, 8, 99, 9, 99, 9, 99};
+const uint8_t UHROUT_REV[] PROGMEM = { 6, 99, 6, 99, 0, 99, 0, 99, 7, 99, 7, 99, 5, 99, 5, 99, 1, 99, 1, 99, 8, 99, 8, 99, 4, 99, 4, 99, 2, 99, 2, 99, 9, 99, 9, 99, 3, 99, 3, 99};
+static uint8_t uhrpos = 0;
 
-// plug r/w   size  ring  pos  
+// plug r/w   size  ring  pos
 // 1    red   thick outer 0
 // 1    red   thin  outer 1
 // 1    white thick inner 2
@@ -262,7 +262,7 @@ static uint8_t uhrpos=0;
 // 10   red   thin  outer 19
 // 10   white thick inner 16
 // 10   white thin  inner 17
- 
+
 
 //lookup table for what bits that are cleared. It is an error to have more than 2 bits cleared
 // 256 locations mapped to what one or two bits that are set
@@ -626,9 +626,9 @@ void printBin16(uint16_t val) {
 ///
 void setPortOut(uint8_t plug) {
   //make port "plug" output (and every other an input)
-  i2c_write2(pbLookup[plug][0],IODIRA+pbLookup[plug][1],0xff ^ (1<<pbLookup[plug][2]));
+  i2c_write2(pbLookup[plug][0], IODIRA + pbLookup[plug][1], 0xff ^ (1 << pbLookup[plug][2]));
   //set  port "plug" low
-  i2c_write2(pbLookup[plug][0],GPIOA+pbLookup[plug][1],0xff ^ (1<<pbLookup[plug][2]));
+  i2c_write2(pbLookup[plug][0], GPIOA + pbLookup[plug][1], 0xff ^ (1 << pbLookup[plug][2]));
 }
 
 /****************************************************************/
@@ -664,17 +664,17 @@ void setPortInAll() {
 //
 void updateEncoderState() {
   static uint8_t i, state;
-  
+
   //read state of the encoder
   state = digitalRead(encoderPins[1]) << 1 | digitalRead(encoderPins[0]);
   if ((encoderState & 0b11) != state) { // same as before ?
     // check time since last change to ignore bounces.
     // Test shown that turning fast at 1ms can still be correct while 6ms can still be bounce/wrong
     // going with high number since on the original Enigma you couldn't physically spin it to fast anyway.
-    if ((millis()-encoderChange) > 10){ 
+    if ((millis() - encoderChange) > 10) {
       encoderState = (encoderState << 2) | state;
       encoderMoved = true;
-      encoderChange=millis();
+      encoderChange = millis();
     } // if no bounce
   } // if state changed
 } //updateEncoderState
@@ -686,39 +686,40 @@ void updateEncoderState() {
 void readAll() {
   uint16_t val;
   val = i2c_read2(mcp_address, GPIOA);
-  valA[0]=val & 0xFF;
-  valA[1]=val >> 8;
+  valA[0] = val & 0xFF;
+  valA[1] = val >> 8;
   valA[1] |= 0xfc; // set the unused pins also, just so bit count is easier
   val = i2c_read2(mcp_address + 1, GPIOA);
-  valA[2]=val & 0xFF;
-  valA[3]=val >> 8;
+  valA[2] = val & 0xFF;
+  valA[3] = val >> 8;
   valA[3] |= 0xfc; // set the unused pins also, just so bit count is easier
 }
 
 /****************************************************************/
 // Interrupt routine that will update the display
-void updateDisplay(){
-  static uint8_t currentLED=0;
+void updateDisplay() {
+  static uint8_t currentLED = 0;
   static uint8_t seg; // "static" to not have to create it each interrupt
-  
+
   updateEncoderState(); // check encoder
-  
-  digitalWrite(Common[currentLED],CommonInactive); // first deactivate current digit
+
+  digitalWrite(Common[currentLED], CommonInactive); // first deactivate current digit
 
   //move on to next digit
-  currentLED++;
-  if (currentLED==MAXLED){
-    currentLED=0;
+  if (currentLED == (MAXLED-1)) {
+    currentLED = 0;
+  } else {
+    currentLED++;
   }
 
-  for (seg=0;seg<8;seg++){ // turn on/off segments as needed
-    if (LEDBuffer[currentLED] & 1<<seg){
-      digitalWrite(Segment[7-seg],SegmentActive);
-    }else{
-      digitalWrite(Segment[7-seg],SegmentInactive);
+  for (seg = 0; seg < 8; seg++) { // turn on/off segments as needed
+    if (LEDBuffer[currentLED] & 1 << seg) {
+      digitalWrite(Segment[7 - seg], SegmentActive);
+    } else {
+      digitalWrite(Segment[7 - seg], SegmentInactive);
     }
   }
-  digitalWrite(Common[currentLED],CommonActive); // Activate the digit
+  digitalWrite(Common[currentLED], CommonActive); // Activate the digit
 
 } // updateDisplay
 
@@ -726,22 +727,26 @@ void updateDisplay(){
 //
 // what number (0-99) to show
 //
-void showNumber(uint8_t number, boolean leadingSpace=false,boolean dp=false){
-  
-  LEDassembly[0]=(number%100)/10;if (dp) {LEDassembly[0]+=10;}
-  LEDassembly[1]=number%10;;if (dp) {LEDassembly[1]+=10;}
-  if (leadingSpace){
+void showNumber(uint8_t number, boolean leadingSpace = false, boolean dp = false) {
+
+  LEDassembly[0] = (number % 100) / 10; if (dp) {
+    LEDassembly[0] += 10;
+  }
+  LEDassembly[1] = number % 10;; if (dp) {
+    LEDassembly[1] += 10;
+  }
+  if (leadingSpace) {
     // replace leading "0" with space
-    if (LEDassembly[0]==0 ){
-      LEDassembly[0]=20;
-    } else if (LEDassembly[0]==10 ){
-      LEDassembly[0]=21;
+    if (LEDassembly[0] == 0 ) {
+      LEDassembly[0] = 20;
+    } else if (LEDassembly[0] == 10 ) {
+      LEDassembly[0] = 21;
     }
   }
   //Have now figured out what we need to show, time to update display buffer
   noInterrupts();
-  LEDBuffer[0]=LEDpattern[LEDassembly[0]];
-  LEDBuffer[1]=LEDpattern[LEDassembly[1]];
+  LEDBuffer[0] = LEDpattern[LEDassembly[0]];
+  LEDBuffer[1] = LEDpattern[LEDassembly[1]];
   interrupts();
 }
 
@@ -750,7 +755,7 @@ void showNumber(uint8_t number, boolean leadingSpace=false,boolean dp=false){
 void setup() {
   boolean boardMissing;
   uint8_t i;
-  
+
   Serial.begin(38400);
   Serial.println(F("UHR box v0.03"));
   Serial.println();
@@ -805,7 +810,9 @@ void setup() {
   pinMode(encoderPins[1], INPUT_PULLUP);
 
   // Setup timer interrupt to update the LED
-  Timer1.initialize(1000); // Run every .001 seconds
+//  Timer1.initialize(1000); // Run every .001 seconds
+//  Timer1.initialize(7500); // Run every .0075 seconds
+  Timer1.initialize(10000); // Run every .01 seconds
   Timer1.attachInterrupt(updateDisplay);
 
   Serial.println(F("Setup done"));
@@ -815,15 +822,15 @@ void setup() {
 /****************************************************************/
 /****************************************************************/
 // return plugnumber based on bitmap
-uint8_t getPlugInfo(uint8_t val,uint8_t base=0){
+uint8_t getPlugInfo(uint8_t val, uint8_t base = 0) {
   uint8_t bits;
-  
-  bits=pgm_read_byte(&BITMASK[val]);
-  if (bits!=0){
-    if (bits > 0xf){
-        return base+(bits >> 4);
-    }else if ((bits & 0xf)>0){
-       return base+(bits & 0xf);
+
+  bits = pgm_read_byte(&BITMASK[val]);
+  if (bits != 0) {
+    if (bits > 0xf) {
+      return base + (bits >> 4);
+    } else if ((bits & 0xf) > 0) {
+      return base + (bits & 0xf);
     }
   }
   return 0;
@@ -835,38 +842,38 @@ uint8_t getPlugInfo(uint8_t val,uint8_t base=0){
 
 void loop() {
   uint8_t val1, val2;
-  static uint8_t i, j,plugIn,plugOut;
+  static uint8_t i, j, plugIn, plugOut;
   uint8_t bitcnt;
   static boolean plug[20];
-  static uint8_t loopcnt = 0, activePlug=99;
+  static uint8_t loopcnt = 0, activePlug = 99;
   static uint8_t activePlugOut = 99;
-  static unsigned long lastChange=0;
+  static unsigned long lastChange = 0;
 
   // first check if the selector was changed
-  if (encoderMoved){
-    encoderMoved=false;
+  if (encoderMoved) {
+    encoderMoved = false;
     //    printBin8(encoderState); Serial.println(); //DEBUG
-    if ((encoderState & 0b11)==0b11) { // current state is bottom of the click
-      switch ((encoderState & 0b1100)>>2) { //check prev state
+    if ((encoderState & 0b11) == 0b11) { // current state is bottom of the click
+      switch ((encoderState & 0b1100) >> 2) { //check prev state
         case B00: // Something wrong, a state was skipped, bad contact?
         case B11: // if current is 11 prev can't be 11 also
           break;
         case B10:
-          if (uhrpos<39)
+          if (uhrpos < 39)
             uhrpos++;
           else
-            uhrpos=0;
+            uhrpos = 0;
           break;
         case B01:
-          if (uhrpos>0)
+          if (uhrpos > 0)
             uhrpos--;
           else
-            uhrpos=39;
+            uhrpos = 39;
           break;
-  	} // switch
-      } // if current state is bottom of the click 
+      } // switch
+    } // if current state is bottom of the click
   } // if encoderMoved
-  
+
   showNumber(uhrpos);
 
   readAll();
@@ -874,56 +881,56 @@ void loop() {
             __builtin_popcount(valA[1]) +
             __builtin_popcount(valA[2]) +
             __builtin_popcount(valA[3])
-            );
+           );
 
-  if (bitcnt == 31 ){ // something changed, one plug is low
-    lastChange=millis();
+  if (bitcnt == 31 ) { // something changed, one plug is low
+    lastChange = millis();
 
-    plugIn =getPlugInfo(valA[0])+getPlugInfo(valA[1],8); // read red/outer ring
-    plugOut=getPlugInfo(valA[2])+getPlugInfo(valA[3],8); // read white/inner ring
+    plugIn = getPlugInfo(valA[0]) + getPlugInfo(valA[1], 8); // read red/outer ring
+    plugOut = getPlugInfo(valA[2]) + getPlugInfo(valA[3], 8); // read white/inner ring
     // at any given time it is only _one_ incoming plug that is valid
     // anything else is discarded
-    
-    if (plugIn>0){  // the active signale is on the red/outer side
-      plugIn=pgm_read_byte(&UHRIN[plugIn-1])+1; // get the contact it is connected to
+
+    if (plugIn > 0) { // the active signale is on the red/outer side
+      plugIn = pgm_read_byte(&UHRIN[plugIn - 1]) + 1; // get the contact it is connected to
     }
 
-    if (plugOut>0){ // the active signale is on the white/inner side, transpose it
-      plugOut=pgm_read_byte(&UHROUT[plugOut-1])+1; // get the contact it is connected to
+    if (plugOut > 0) { // the active signale is on the white/inner side, transpose it
+      plugOut = pgm_read_byte(&UHROUT[plugOut - 1]) + 1; // get the contact it is connected to
     }
 
-    if (plugIn>0 && plugIn != activePlug){ // detecting a scan on the red side
-      activePlug=pgm_read_byte(&UHROUTER[(plugIn+uhrpos) % 40]); // find plug to trigger on the white side
+    if (plugIn > 0 && plugIn != activePlug) { // detecting a scan on the red side
+      activePlug = pgm_read_byte(&UHROUTER[(plugIn + uhrpos) % 40]); // find plug to trigger on the white side
       // BUG, probably need to do a reverse of UHROUT here
-    }else if (plugOut>0 && plugOut != activePlug){ // detecting a scan on the white side
-      activePlug=pgm_read_byte(&UHRINNER[(plugIn+uhrpos) % 40]); // find plug to trigger on the red side
-    }else{
-      activePlug=99; // might be the plug we activated in prev scan
+    } else if (plugOut > 0 && plugOut != activePlug) { // detecting a scan on the white side
+      activePlug = pgm_read_byte(&UHRINNER[(plugIn + uhrpos) % 40]); // find plug to trigger on the red side
+    } else {
+      activePlug = 99; // might be the plug we activated in prev scan
     }
 
-    if (activePlug < 40){
-      if(activePlug > 9){ // plug 0-9 on first chip, 10-19 on second chip
-        setPortOut(UHROUT_REV[activePlug]+6);
-      }else{
+    if (activePlug < 40) {
+      if (activePlug > 9) { // plug 0-9 on first chip, 10-19 on second chip
+        setPortOut(UHROUT_REV[activePlug] + 6);
+      } else {
         setPortOut(UHRIN_REV[activePlug]);
       }
-    }else{
+    } else {
       setPortInAll(); // go back to listening
     }
-    
+
 #ifdef DEBUG
-    uint8_t valA_prev[4],bitcnt_prev;
+    uint8_t valA_prev[4], bitcnt_prev;
     for (i = 0; i < 4; i++) {
-      valA_prev[i]=valA[i];
+      valA_prev[i] = valA[i];
     }
-    bitcnt_prev=bitcnt;
+    bitcnt_prev = bitcnt;
     readAll();
     bitcnt = (__builtin_popcount(valA[0]) +
               __builtin_popcount(valA[1]) +
               __builtin_popcount(valA[2]) +
               __builtin_popcount(valA[3])
-              );
-    
+             );
+
     // first show tested values
     Serial.print(bitcnt_prev);
     Serial.print(F(" "));
@@ -934,7 +941,7 @@ void loop() {
       Serial.print(F(") "));
     }
     Serial.print(F("  "));
-    
+
     Serial.print(plugIn);
     Serial.print(F(" & "));
     Serial.print(plugOut);
@@ -946,37 +953,39 @@ void loop() {
 
     uint8_t plugVal;
     char dir;
-    if (plugIn>0){
-      plugVal=plugIn;
-      dir='W';
-    }else{
-      plugVal=plugOut;
-      dir='R';
+    if (plugIn > 0) {
+      plugVal = plugIn;
+      dir = 'W';
+    } else {
+      plugVal = plugOut;
+      dir = 'R';
     }
     Serial.print(F(" plugVal-1+uhrpos: "));
-    Serial.print((uint8_t) (plugVal-1+uhrpos));
+    Serial.print((uint8_t) (plugVal - 1 + uhrpos));
     Serial.print(F(", (plugVal-1+uhrpos) % 40: "));
-    Serial.print((uint8_t) ((plugVal-1+uhrpos) % 40));
-    if (plugIn>0){
+    Serial.print((uint8_t) ((plugVal - 1 + uhrpos) % 40));
+    if (plugIn > 0) {
       Serial.print(F(", &UHROUTER[(plugVal-1+uhrpos) % 40]: "));
-      Serial.print((uint8_t) &UHROUTER[(plugVal-1+uhrpos) % 40]);
+      Serial.print((uint8_t) &UHROUTER[(plugVal - 1 + uhrpos) % 40]);
       Serial.print(F(", pgm_read_byte(..): "));
-      Serial.print((uint8_t) pgm_read_byte(&UHROUTER[(plugVal-1+uhrpos) % 40]));
-    }else{         
+      Serial.print((uint8_t) pgm_read_byte(&UHROUTER[(plugVal - 1 + uhrpos) % 40]));
+    } else {
       Serial.print(F(", &UHRINNER[(plugVal-1+uhrpos) % 40]: "));
-      Serial.print((uint8_t) &UHRINNER[(plugVal-1+uhrpos) % 40]);
+      Serial.print((uint8_t) &UHRINNER[(plugVal - 1 + uhrpos) % 40]);
       Serial.print(F(", pgm_read_byte(..): "));
-      Serial.print((uint8_t) pgm_read_byte(&UHRINNER[(plugVal-1+uhrpos) % 40]));
+      Serial.print((uint8_t) pgm_read_byte(&UHRINNER[(plugVal - 1 + uhrpos) % 40]));
     }
-                 
-    Serial.print((uint8_t) &UHROUTER[(plugVal-1+uhrpos) % 40]);
+
+    Serial.print((uint8_t) &UHROUTER[(plugVal - 1 + uhrpos) % 40]);
     Serial.print(F(", pgm_read_byte(..): "));
-    Serial.print((uint8_t) pgm_read_byte(&UHROUTER[(plugVal-1+uhrpos) % 40]));
+    Serial.print((uint8_t) pgm_read_byte(&UHROUTER[(plugVal - 1 + uhrpos) % 40]));
     Serial.print(F(" "));
 
-    if (plugIn>0 && plugOut>0){Serial.print(F(" <<<<<< "));}
+    if (plugIn > 0 && plugOut > 0) {
+      Serial.print(F(" <<<<<< "));
+    }
     Serial.println();
-    
+
     // now show current values
     Serial.print(bitcnt);
     Serial.print(F(" "));
@@ -989,7 +998,7 @@ void loop() {
     }
     Serial.println();
     Serial.println();
-    delay(305+random(330));
+    delay(305 + random(330));
 #endif
 
     /*
@@ -1014,21 +1023,21 @@ void loop() {
         Serial.print(val1 & 0xF);
         Serial.println();
       }
-    }
+      }
     */
-  }else{
-    if ((unsigned long)(millis()/1000-lastChange/1000)>300){ // after this many seconds, go to standby
+  } else {
+    if ((unsigned long)(millis() / 1000 - lastChange / 1000) > 300) { // after this many seconds, go to standby
       //      Serial.println(F("no activity, going to standby mode"));
       Serial.print(F("no activity for "));
-      Serial.print(millis()/1000-lastChange/1000);
+      Serial.print(millis() / 1000 - lastChange / 1000);
       Serial.println(F(" seconds, going to standby mode"));
       //To be written, code to go to very deep sleep
-      lastChange=millis();
+      lastChange = millis();
     }
   } // if bitcnt==31
 
   /*
-  if (bitcnt == 31 || bitcnt == 30) { // 31 for first round, 30 for following rounds
+    if (bitcnt == 31 || bitcnt == 30) { // 31 for first round, 30 for following rounds
     if ((valA[0] & 4) == 0 && activePlug != 0){ // 4 = "E", 0="Q" on the "uhr" side
       setPortOut(0);
       activePlug=2;
@@ -1039,13 +1048,13 @@ void loop() {
       activePlug=99;
       setPortIn(0);
     }
-  } else {
+    } else {
     setPortIn(0);
-  }
-  for (i=0;i<20;i++){plug[i]=false;} //clear all plugs for next round
+    }
+    for (i=0;i<20;i++){plug[i]=false;} //clear all plugs for next round
 
-  //(char)pgm_read_byte(&steckerbrett[0]+key-1)
-  for (i = 0; i < 26; i++) {
+    //(char)pgm_read_byte(&steckerbrett[0]+key-1)
+    for (i = 0; i < 26; i++) {
     if (plug[i]) {
       Serial.print(" ");
       Serial.print((char)toupper(pgm_read_byte(&steckerbrett[0] + i)));
@@ -1060,19 +1069,19 @@ void loop() {
     } else if (i == 16) {
       Serial.println();
     }
-  }
-  Serial.println();
+    }
+    Serial.println();
 
-  if (loopcnt % 2 == 0) {
+    if (loopcnt % 2 == 0) {
     digitalWrite(LED_BUILTIN, LOW);
-  } else {
+    } else {
     digitalWrite(LED_BUILTIN, HIGH);
-  }
-  loopcnt++;
-  if (loopcnt == 10) {
+    }
+    loopcnt++;
+    if (loopcnt == 10) {
     loopcnt = 0;
-  }
-  display.display();
-  delay(10);
-*/
+    }
+    display.display();
+    delay(10);
+  */
 } // loop
