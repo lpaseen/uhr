@@ -688,11 +688,11 @@ void readAll() {
   val = i2c_read2(mcp_address, GPIOA);
   valA[0] = val & 0xFF;
   valA[1] = val >> 8;
-  valA[1] |= 0xfc; // set the unused pins also, just so bit count is easier
+  valA[0] |= 0xfc; // set the unused pins also, just so bit count is easier
   val = i2c_read2(mcp_address + 1, GPIOA);
   valA[2] = val & 0xFF;
   valA[3] = val >> 8;
-  valA[3] |= 0xfc; // set the unused pins also, just so bit count is easier
+  valA[2] |= 0xfc; // set the unused pins also, just so bit count is easier
 }
 
 /****************************************************************/
@@ -811,8 +811,8 @@ void setup() {
 
   // Setup timer interrupt to update the LED
 //  Timer1.initialize(1000); // Run every .001 seconds
-//  Timer1.initialize(7500); // Run every .0075 seconds
-  Timer1.initialize(10000); // Run every .01 seconds
+  Timer1.initialize(7500); // Run every .0075 seconds
+//  Timer1.initialize(10000); // Run every .01 seconds
   Timer1.attachInterrupt(updateDisplay);
 
   Serial.println(F("Setup done"));
@@ -838,6 +838,7 @@ uint8_t getPlugInfo(uint8_t val, uint8_t base = 0) {
 
 //#define SHOWBITS
 #define DEBUG
+//#define DEBUG2
 
 
 void loop() {
@@ -883,6 +884,20 @@ void loop() {
             __builtin_popcount(valA[3])
            );
 
+#ifdef SHOWBITS
+  if (bitcnt != 32 ) { // some input is low
+    printBin8(valA[0]);
+    printBin8(valA[1]);
+    printBin8(valA[2]);
+    printBin8(valA[3]);
+    Serial.println();
+    delay(200);
+  }
+  return;
+#endif
+
+
+  
   if (bitcnt == 31 ) { // something changed, one plug is low
     lastChange = millis();
 
@@ -917,7 +932,15 @@ void loop() {
     } else {
       setPortInAll(); // go back to listening
     }
-
+    
+#ifdef DEBUG2
+    Serial.print(F("ActivePlug: "));
+    Serial.println(activePlug);
+    activePlug=99;
+    delay(500);
+    return;
+#endif
+    
 #ifdef DEBUG
     uint8_t valA_prev[4], bitcnt_prev;
     for (i = 0; i < 4; i++) {
