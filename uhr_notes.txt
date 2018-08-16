@@ -47,3 +47,13 @@ gnutr ynemx taegu uzivf eyzbi ucgay jsyss seuge tsgcn yybyy rqbxo uwwnm xvxoj zc
 Wheels: B. I-II-III (A,A,A) / Rings: 01 01 01 / Plugged: QP WY EX RC TV ZB UN IM OL AK /Uhr=03
 ABCD..ZABC... ->
 wyqwi cpqql gcwxx oravo ccsbu yrwtc vscst sfnim plkmp dfnjb taxyj emzpk kvpgn mudpc xebwy foetc kydqt ggyjq ahams khqdq uzjjm ciwcx teqlg ssrfa rddoc xceru kurzz ceoaf hzyqx odpbp wfxuw olzjj tvbkb glwza bxtzy rkofn vdbok kmqkv epjib oudbv qyynk esuud gbphv slnhy lowcp vllaj hzjez yfwqm paqlg qgpgu syhfc zdgud
+
+
+
+================================================================
+Save last UHR pos in eeprom after 2sec timeout
+save in first 0xFF pos
+  always "modify" two bytes - uhrpos and 0xFF
+  if no 0xff found, start over at 0
+When starting, read eeprom to first 0xFF
+  if none found, use last pos
