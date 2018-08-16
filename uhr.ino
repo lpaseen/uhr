@@ -837,8 +837,8 @@ uint8_t getPlugInfo(uint8_t val, uint8_t base = 0) {
   bits = pgm_read_byte(&BITMASK[val]);
   if (bits != 0) {
     if (bits > 0xf) {
-      return base + (bits >> 4);
-    } else if ((bits & 0xf) > 0) {
+      return base + (bits >> 4); // Return just the top number, ignore the bottom part
+    } else if ((bits & 0xf) > 0) { // this part is no longer used
       return base + (bits & 0xf);
     }
   }
@@ -934,13 +934,13 @@ void loop() {
         //        contact = pgm_read_byte(&UHRIN[plug - 1]); // get the contact it is connected to
         contact = (plug - 1) * 4; // get the contact it is connected to
         activeContact = pgm_read_byte(&UHROUTER[(contact + uhrpos) % 40]); // find plug to trigger on the white side
-        activePlug    = UHROUT_REV[activeContact]+10; // activePlug is now 11-20
-        activePortOut = activePlug+15; // "+6" because plug 1-10 on first chip(port 0-9), 11-20 on second chip (port 16-31)
+        activePlug    = UHROUT_REV[activeContact-uhrpos]+11; // activePlug is now 11-20
+        activePortOut = activePlug+5; // "+6" because plug 1-10 on first chip(port 0-9), 11-20 on second chip (port 16-31)
       }else{
         contact = pgm_read_byte(&UHROUT[plug - 11]); // get the contact it is connected to
         activeContact = pgm_read_byte(&UHRINNER[(contact + uhrpos) % 40]); // find plug to trigger on the red side
         //        activePlug=UHRIN_REV[activeContact] + 1;
-        activePlug=(activeContact-2)/4+1;  // activePlug is now 1-10
+        activePlug=(activeContact-uhrpos-2)/4+1;  // activePlug is now 1-10
         activePortOut=activePlug-1;
       }
     } else {
