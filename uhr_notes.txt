@@ -57,3 +57,9 @@ save in first 0xFF pos
   if no 0xff found, start over at 0
 When starting, read eeprom to first 0xFF
   if none found, use last pos
+
+
+cable,
+ solderpad absolute min is AWG16, AWG14/1.5mm makes life simpler.
+ tension hole - AWG 9 or 3mm.
+
